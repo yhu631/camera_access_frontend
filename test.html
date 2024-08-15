@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Access and Capture</title>
+    <style>
+        #video {
+            width: 100%;
+            height: auto;
+            border: 1px solid black;
+        }
+        #canvas {
+            display: none; 
+        }
+        #buttons {
+            margin-top: 10px;
+        }
+        #imageGallery {
+            margin-top: 10px;
+        }
+        .thumbnail {
+            width: 100px;
+            height: auto;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Camera Access and Capture Example</h1>
+    <video id="video" autoplay></video>
+    <canvas id="canvas"></canvas>
+    <div id="buttons">
+        <button id="toggleCamera">Switch Camera</button>
+        <button id="startCapture">Start Capture</button>
+        <button id="stopCapture" style="display:none;">Stop Capture</button>
+    </div>
+    <div id="imageGallery"></div>
+
+    <script>
+        let currentStream;
+        let useFrontCamera = false; // Default to back camera
+        let capturing = false; // Track if capturing is active
+        let imageCount = 0;
+
+        async function startCamera(facingMode) {
+            try {
+                // Stop any existing stream
+                if (currentStream) {
+                    const tracks = currentStream.getTracks();
+                    tracks.forEach(track => track.stop());
+                }
+
+                // Request access to the user's camera with the specified facingMode
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode }
+                });
+
+                const videoElement = document.getElementById('video');
+                videoElement.srcObject = stream;
+
+                currentStream = stream;
+            } catch (error) {
+                console.error('Error accessing the camera:', error);
+            }
+        }
+
+        function captureFrames() {
+            const videoElement = document.getElementById('video');
+            const canvasElement = document.getElementById('canvas');
+            const context = canvasElement.getContext('2d');
+
+            // Set canvas dimensions to match video
+            canvasElement.width = videoElement.videoWidth;
+            canvasElement.height = videoElement.videoHeight;
+
+            function capture() {
+                if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+                    context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+                    
+                    // Capture the image data URL (base64 encoded)
+                    const imageDataURL = canvasElement.toDataURL('image/jpeg');
+                    sendImageToServer(imageDataURL);
+                }
+
+                if (capturing) {
+                    // Capture frames at approximately 1 frame per second (adjust as needed)
+                    setTimeout(capture, 5000); 
+                }
+            }
+
+            // Start capturing
+            capture();
+        }
+
+        async function sendImageToServer(imageDataURL) {
+            try {
+                // Convert base64 image data URL to Blob
+                const blob = await fetch(imageDataURL)
+                    .then(res => res.blob());
+
+                const formData = new FormData();
+                formData.append('file', blob, `captured-image-${imageCount++}.jpg`);
+
+                // Send image data to the backend server
+                const response = await fetch('https://your-backend-server.com/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to upload image');
+                }
+
+                // Optionally, handle server response here
+                console.log('Image successfully sent to server');
+            } catch (error) {
+                console.error('Error sending image to server:', error);
+            }
+        }
+
+        document.getElementById('toggleCamera').addEventListener('click', () => {
+            // Toggle between front and back camera
+            useFrontCamera = !useFrontCamera;
+            const facingMode = useFrontCamera ? 'user' : 'environment';
+            startCamera(facingMode);
+        });
+
+        document.getElementById('startCapture').addEventListener('click', () => {
+            capturing = true;
+            document.getElementById('startCapture').style.display = 'none';
+            document.getElementById('stopCapture').style.display = 'inline';
+            captureFrames();
+        });
+
+        document.getElementById('stopCapture').addEventListener('click', () => {
+            capturing = false;
+            document.getElementById('startCapture').style.display = 'inline';
+            document.getElementById('stopCapture').style.display = 'none';
+        });
+
+        // Start the camera with the back camera by default
+        window.onload = () => startCamera('environment');
+    </script>
+</body>
+</html>
