@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Four Sections Layout</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 25% 50% 25%;
+            grid-template-rows: 75% 25%;
+            width: 100vw;
+            height: 100vh;
+            grid-template-areas:
+                "left top-middle right"
+                "left bottom-middle right";
+        }
+
+        .section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #fff; /* Text color for better visibility */
+            border: 1px solid #000; /* Black border for separation */
+            box-sizing: border-box;
+        }
+
+        /* Define the grid areas */
+        #left {
+            background-color: #b3dcf9;
+            grid-area: left;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            gap: 10px; /* Space between rows */
+            box-sizing: border-box; /* Ensure padding is included in width/height */
+        }
+
+        /* Separate class for keyword buttons */
+        .keyword-buttons {
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically */
+            gap: 10px; /* Space between keyword buttons */
+        }
+
+        .keyword-button {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #ddd;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            margin: 5px; /* Space around buttons */
+            box-sizing: border-box; /* Include padding and border in button size */
+        }
+
+        .keyword-button.active {
+            background-color: #ffcc00; /* Highlight color */
+            color: #000;
+        }
+
+        .keyword-button:hover {
+            background-color: #f0f0f0; /* Light hover effect */
+        }
+
+        #right {
+            background-color: #b3dcf9;
+            grid-area: right;
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* Ensure it spans the full height */
+            box-sizing: border-box;
+            position: relative; /* For absolute positioning of child elements */
+        }
+
+        #top-middle {
+            background-color: #f4b2b2;
+            grid-area: top-middle;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive grid */
+            grid-gap: 10px; /* Space between images */
+            padding: 10px; /* Padding around the grid */
+            overflow: auto; /* Allow scrolling if content overflows */
+            align-content: start; /* Align images to the start */
+        }
+
+        #bottom-middle {
+            background-color: #f5d193;
+            grid-area: bottom-middle;
+            display: flex; /* Flex container to hold two sections */
+            height: 100%; /* Ensure it takes full height of the grid cell */
+            flex-direction: row; /* Align children horizontally */
+        }
+
+        /* Adjust the bottom-section to align its content horizontally */
+        .bottom-section {
+            flex: 1; /* Each section takes up equal space */
+            padding: 10px; /* Padding around the content */
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 2px solid black; /* Black border separator */
+            background-color: inherit; /* Ensure background color is inherited from parent */
+            text-align: center; /* Center the text horizontally */
+        }
+
+        /* Remove the right border from the last section */
+        .bottom-section:last-child {
+            border-right: none; /* Remove the right border for the last section */
+        }
+
+        .button {
+            width: 30%;
+            height: 15%;
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #ddd;
+            padding: 5px 10px; /* Smaller padding for buttons */
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            margin: 5px; /* Space between buttons */
+            position: absolute; /* Positioning for absolute placement */
+        }
+
+        .button.active {
+            background-color: #ffcc00; /* Highlight color */
+            color: #000;
+        }
+
+        .button:hover {
+            background-color: #f0f0f0; /* Light hover effect */
+        }
+
+        .upload-area {
+            margin-bottom: 10px; /* Space between upload area and buttons */
+            text-align: center;
+        }
+
+        .upload-area input[type="file"] {
+            display: none; /* Hide the default file input */
+        }
+
+        .upload-area label {
+            background-color: #007bff; /* Blue background */
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-block;
+            border: 1px solid #ddd;
+        }
+
+        .upload-area label:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        .image-item {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        .image-item img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            object-fit: cover; /* Ensure the image covers the container */
+        }
+
+        .subpage-buttons {
+            display: flex;
+            justify-content: space-between; /* Align buttons horizontally with space between */
+            background-color: #b3dcf9; /* Same background as right section */
+            padding: 10px;
+            border-bottom: 2px solid black; /* Separator line below the buttons */
+            flex-shrink: 0; /* Prevent shrinking of buttons area */
+        }
+
+        .subpage-buttons button {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #ddd;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-right: 5px; /* Space between buttons */
+            flex: 1; /* Make buttons take equal width */
+        }
+
+        .subpage-buttons button:last-child {
+            margin-right: 0; /* Remove the margin for the last button */
+        }
+
+        .subpage-buttons button:hover {
+            background-color: #f0f0f0; /* Light hover effect */
+        }
+
+        .content-area {
+            padding: 10px;
+            overflow: auto; /* Allow scrolling if content overflows */
+            background-color: #b3dcf9; /* Match background color of the right section */
+            height: 60%; /* Adjust height to cover 60% of the right section */
+            box-sizing: border-box; /* Ensure padding and borders are included in the height */
+            margin-top: 10px; /* Space between subpage buttons and content area */
+        }
+
+        .new-section {
+            padding: 10px;
+            background-color: #fff; /* White background for new section */
+            height: 35%; /* Adjust height to cover 35% of the right section */
+            width: 100%; /* Make new-section take the full width of the right section */
+            box-sizing: border-box; /* Ensure padding and borders are included in the height */
+            margin-top: 10px; /* Space between content area and new section */
+            position: relative; /* Ensure absolute positioning works */
+        }
+
+        .text-display {
+            width: 100%; /* Make text-display take the whole width of the right section */
+            height: 25%; /* Cover bottom 25% of the right section */
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #e0e0e0; /* Light gray background for text display */
+            text-align: center; /* Center the text */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: auto; /* Push text display to the bottom of the right section */
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center; /* Center the text horizontally */
+        }
+
+        /* Adjustments for button positioning */
+        .button-1 {
+            top: 50%;
+            left: 5%;
+            transform: translateY(-50%);
+        }
+
+        .button-2 {
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .button-3 {
+            bottom: 5%;
+            right: 5%;
+        }
+
+        .button-1 {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    transform: translateY(-50%);
+}
+
+.button-2 {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.button-3 {
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+}
+
+/* Arrow Shape 1 (Button 1 to Button 2) */
+.arrow-shape-1 {
+    position: absolute;
+    top: 27%;
+    left: calc(5% + 50px);
+    width: 40%;
+    height: 2px;
+    background-color: black;
+}
+
+.arrow-shape-1::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid black;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+}
+
+/* Arrow Shape 2 (Button 1 to Button 3) */
+.arrow-shape-2 {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    width: 50%;
+    height: 2px;
+    background-color: black;
+    transform: rotate(45deg); /* Adjust to angle towards Button 3 */
+}
+
+.arrow-shape-2::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid black;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    transform: rotate(-45deg);
+}
+
+        .line {
+            position: absolute;
+            z-index: 0;
+        }
+
+        #line1 {
+            background-color: purple;
+            width: 2px;
+            height: 30%; 
+            top: 15%; 
+            left: 20%; 
+        }
+
+        #line2 {
+            background-color: orange;
+            width: 2px;
+            height: 26%; 
+            top: 60%; 
+            left: 20%; 
+        }
+
+        .horizontal-line1::after {
+            content: "";
+            position: absolute;
+            right: -5px; 
+            top: -5px; 
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-left: 10px solid black;
+            border-bottom: 5px solid transparent;
+        }
+
+        .horizontal-line2::after {
+            content: "";
+            position: absolute;
+            right: -5px; 
+            top: -5px; 
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-left: 10px solid black;
+            border-bottom: 5px solid transparent;
+        }
+
+        .horizontal-line1 {
+            width: 18%;
+            left: 17.5%;
+            top: 10.5%;
+            height: 2px;
+            background-color: #ac0b0b;
+            position: relative;
+            margin: 0 0%;
+
+        }
+
+        .horizontal-line2 {
+            width: 47.5%;
+            left: 17.5%;
+            top: 87.5%;
+            height: 2px;
+            background-color: hsl(207, 88%, 39%);
+            position: relative;
+            margin: 0 0%;
+
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section" id="left">
+            <!-- Image upload area -->
+            <div class="upload-area">
+                <label for="image-upload">Upload Images</label>
+                <input type="file" id="image-upload" accept="image/*" multiple onchange="handleImageUpload(event)">
+            </div>
+            <!-- Keyword buttons section -->
+            <div class="keyword-buttons">
+                <div class="keyword-row">
+                    <button class="keyword-button" onclick="highlight(this)">Keyword 1</button>
+                    <button class="keyword-button" onclick="highlight(this)">Keyword 2</button>
+                </div>
+                <div class="keyword-row">
+                    <button class="keyword-button" onclick="highlight(this)">Keyword 3</button>
+                    <button class="keyword-button" onclick="highlight(this)">Keyword 4</button>
+                </div>
+            </div>
+        </div>
+        <div class="section" id="right">
+            <div class="subpage-buttons">
+                <button onclick="showContent('page1')">Page 1</button>
+                <button onclick="showContent('page2')">Page 2</button>
+                <button onclick="showContent('page3')">Page 3</button>
+            </div>
+            <div id="content-area" class="content-area">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div id="new-section" class="new-section">
+                <button class="button button-1" onclick="changeText('Text for Button 1')">Button 1</button>
+                <button class="button button-2" onclick="changeText('Text for Button 2')">Button 2</button>
+                <button class="button button-3" onclick="changeText('Text for Button 3')">Button 3</button>
+                <div class="line" id = "line1"></div>
+                <div class = horizontal-line1> </div>
+                <div class="line" id = "line2"></div>
+                <div class = horizontal-line2> </div>
+                
+            </div>
+            <div id="text-display" class="text-display">
+                Text Display Area
+            </div>
+        </div>
+        <div class="section" id="top-middle">
+            <!-- Images will be dynamically inserted here -->
+        </div>
+        <div id="bottom-middle" class="section">
+            <div class="bottom-section" id="bottom-left">
+                Bottom Left
+            </div>
+            <div class="bottom-section" id="bottom-right">
+                Bottom Right
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function highlight(button) {
+            button.classList.toggle('active'); // Toggle the 'active' class on click
+        }
+
+        function handleImageUpload(event) {
+            const files = event.target.files;
+            const topMiddle = document.getElementById('top-middle');
+            const maxImages = calculateMaxImages(); // Calculate maximum number of images
+
+            // Only allow as many images as fit in the area
+            Array.from(files).slice(0, maxImages).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'image-item';
+                    topMiddle.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function calculateMaxImages() {
+            const topMiddle = document.getElementById('top-middle');
+            const topMiddleWidth = topMiddle.clientWidth;
+            const topMiddleHeight = topMiddle.clientHeight;
+            const imageSize = 150; // Size of the images
+            const gap = 10; // Gap between images
+
+            const imagesPerRow = Math.floor(topMiddleWidth / (imageSize + gap)); // Images per row
+            const rows = Math.floor(topMiddleHeight / (imageSize + gap)); // Number of rows
+
+            return imagesPerRow * rows;
+        }
+
+        function showContent(pageId) {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = ''; // Clear existing content
+
+            const content = document.createElement('div');
+            content.className = 'content';
+
+            switch (pageId) {
+                case 'page1':
+                    content.innerHTML = '<h2>Page 1 Content</h2><p>This is the content for Page 1.</p>';
+                    break;
+                case 'page2':
+                    content.innerHTML = '<h2>Page 2 Content</h2><p>This is the content for Page 2.</p>';
+                    break;
+                case 'page3':
+                    content.innerHTML = '<h2>Page 3 Content</h2><p>This is the content for Page 3.</p>';
+                    break;
+                default:
+                    content.innerHTML = '<h2>Welcome</h2><p>Select a page to view its content.</p>';
+                    break;
+            }
+
+            contentArea.appendChild(content);
+        }
+
+        function changeText(newText) {
+            const textDisplay = document.getElementById('text-display');
+            textDisplay.innerHTML = newText; // Update the text display area
+        }
+
+        // Show default content
+        showContent('page1');
+    </script>
+</body>
+</html>
