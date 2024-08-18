@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout with Keywords and Buttons</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 60% 40%; /* 60% width for the left section, 40% for the right section */
+            grid-template-rows: 3fr 1fr; /* 75% height for the left section, 25% for the bottom section */
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .left-section {
+            background-color: #f4b2b2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative; /* For absolute positioning of children */
+            overflow: auto; /* Allow scrolling if content overflows */
+            border-right: 1px solid #000; /* Standardized border width */
+            border-bottom: 1px solid #000; /* Standardized border width */
+            box-sizing: border-box; /* Ensure padding is included in width/height */
+            grid-column: 1; /* Span the entire left column */
+            grid-row: 1; /* Span the first row (75% height) */
+        }
+
+        .left-section .upload-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 5px 10px;
+            cursor: pointer;
+            border: 1px solid #000;
+            background-color: #28a745;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        .left-section .upload-button:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        .left-section .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Space between image sections */
+            margin-top: 60px; /* Space below the upload button */
+            overflow-y: auto; /* Allow scrolling if images overflow */
+        }
+
+        .left-section .image-container .image-item {
+            flex: 1 1 calc(33.333% - 10px); /* Each image section takes up about 33% width minus spacing */
+            box-sizing: border-box;
+            border: 1px solid #000; /* Border around each image section */
+            padding: 5px;
+            background-color: #fff; /* White background for image sections */
+            height: 100px; /* Fixed height for image items */
+            background-size: cover; /* Cover the section with the image */
+            background-position: center; /* Center the image */
+        }
+
+        .left-bottom-section {
+            background-color: #d3d3d3;
+            display: flex;
+            flex-direction: row; /* Align sections horizontally */
+            border-top: 1px solid #000; /* Standardized border width */
+            border-left: 1px solid #000; /* Standardized border width */
+            border-right: 1px solid #000; /* Standardized border width */
+            box-sizing: border-box; /* Ensure padding is included in height */
+            grid-column: 1; /* Span the entire left column */
+            grid-row: 2; /* Place in the second row (25% height) */
+        }
+
+        .left-bottom-section .bottom-left,
+        .left-bottom-section .bottom-right {
+            flex: 1; /* Equally split space */
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            border-right: 1px solid #000; /* Border between the two sections */
+        }
+
+        .left-bottom-section .bottom-right {
+            border-right: none; /* Remove border from the last section */
+        }
+
+        .right-section {
+            background-color: #b3dcf9;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box; /* Ensure padding is included in width/height */
+            overflow: hidden; /* Prevent content overflow */
+            border-left: 1px solid #000; /* Standardized border width */
+            grid-column: 2; /* Span the entire right column */
+            grid-row: 1 / span 2; /* Span both rows */
+        }
+
+        .right-section .subpage-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px; /* Space between buttons and keyword section */
+        }
+
+        .right-section .subpage-buttons button {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #ddd;
+            padding: 10px; /* Padding for buttons */
+            cursor: pointer;
+            border-radius: 5px;
+            margin-right: 10px; /* Space between buttons */
+            flex: 1; /* Make buttons take equal width */
+            font-size: 0.9rem; /* Font size for buttons */
+        }
+
+        .right-section .subpage-buttons button:last-child {
+            margin-right: 0;
+        }
+
+        .right-section .subpage-buttons button:hover {
+            background-color: #f0f0f0; /* Light hover effect */
+        }
+
+        .right-section .keyword-section {
+            margin-bottom: 10px; /* Space between keyword section and content area */
+        }
+
+        .right-section .keyword-buttons {
+            display: flex;
+            flex-direction: column; /* Stack rows vertically */
+            align-items: center; /* Center rows horizontally */
+            gap: 10px; /* Space between rows */
+        }
+
+        .right-section .keyword-row {
+            display: flex; /* Arrange buttons in a row */
+            justify-content: center; /* Center buttons horizontally */
+            gap: 10px; /* Space between buttons */
+        }
+
+        .right-section .keyword-button {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #ddd;
+            padding: 8px 12px; /* Smaller padding for buttons */
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.8rem; /* Smaller font size */
+        }
+
+        .right-section .keyword-button.active {
+            background-color: #ffcc00; /* Highlight color */
+        }
+
+        .right-section .keyword-button:hover {
+            background-color: #f0f0f0; /* Light hover effect */
+        }
+
+        .right-section .content-area {
+            flex-grow: 1;
+            overflow: auto; /* Allow scrolling if content overflows */
+            background-color: #b3dcf9;
+            margin-bottom: 10px; /* Space between content area and new section */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the content horizontally */
+        }
+
+        .right-section .new-section {
+            background-color: #fff;
+            padding: 15px; /* Adjusted padding */
+            height: 25%; /* Height for new section */
+            box-sizing: border-box; /* Ensure padding is included in height */
+        }
+
+        .right-section .text-display {
+            background-color: #e0e0e0;
+            padding: 15px; /* Adjusted padding */
+            text-align: center;
+            font-size: 1rem; /* Adjusted font size for better balance */
+            height: 25%; /* Height for text display */
+            margin-top: auto; /* Push text display to the bottom */
+            box-sizing: border-box; /* Ensure padding is included in height */
+        }
+
+        /* Ensure no border on the top of the subpage-buttons */
+        .right-section .subpage-buttons {
+            border-top: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <button class="upload-button">Upload Picture</button>
+            <div class="image-container" id="image-container">
+                <!-- Images will be dynamically added here -->
+            </div>
+        </div>
+        <div class="left-bottom-section">
+            <div class="bottom-left">
+                <!-- Bottom left section content -->
+                <p>Bottom Left</p>
+            </div>
+            <div class="bottom-right">
+                <!-- Bottom right section content -->
+                <p>Bottom Right</p>
+            </div>
+        </div>
+        <div class="right-section">
+            <div class="subpage-buttons">
+                <button onclick="showContent('page1')">Page 1</button>
+                <button onclick="showContent('page2')">Page 2</button>
+                <button onclick="showContent('page3')">Page 3</button>
+            </div>
+            <div class="keyword-section">
+                <div class="keyword-buttons">
+                    <div class="keyword-row">
+                        <button class="keyword-button" onclick="highlight(this)">Keyword 1</button>
+                        <button class="keyword-button" onclick="highlight(this)">Keyword 2</button>
+                    </div>
+                    <div class="keyword-row">
+                        <button class="keyword-button" onclick="highlight(this)">Keyword 3</button>
+                        <button class="keyword-button" onclick="highlight(this)">Keyword 4</button>
+                    </div>
+                </div>
+            </div>
+            <div id="content-area" class="content-area">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+            <div id="new-section" class="new-section">
+                <button class="button button-1" onclick="changeText('Text for Button 1')">Button 1</button>
+                <button class="button button-2" onclick="changeText('Text for Button 2')">Button 2</button>
+                <button class="button button-3" onclick="changeText('Text for Button 3')">Button 3</button>
+            </div>
+            <div id="text-display" class="text-display">
+                Text Display Area
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function highlight(button) {
+            button.classList.toggle('active'); // Toggle the 'active' class on click
+        }
+
+        function showContent(pageId) {
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = ''; // Clear existing content
+
+            const content = document.createElement('div');
+            content.className = 'content';
+
+            switch (pageId) {
+                case 'page1':
+                    content.innerHTML = '<h2>Page 1 Content</h2><p>This is the content for Page 1.</p>';
+                    break;
+                case 'page2':
+                    content.innerHTML = '<h2>Page 2 Content</h2><p>This is the content for Page 2.</p>';
+                    break;
+                case 'page3':
+                    content.innerHTML = '<h2>Page 3 Content</h2><p>This is the content for Page 3.</p>';
+                    break;
+                default:
+                    content.innerHTML = '<h2>Default Content</h2><p>Select a page to display content.</p>';
+            }
+
+            contentArea.appendChild(content);
+        }
+
+        function changeText(text) {
+            document.getElementById('text-display').innerText = text;
+        }
+
+        document.querySelector('.upload-button').addEventListener('click', function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.style.display = 'none';
+            document.body.appendChild(input);
+
+            input.addEventListener('change', function() {
+                const files = Array.from(input.files);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const imageItem = document.createElement('div');
+                            imageItem.classList.add('image-item');
+                            imageItem.style.backgroundImage = `url(${event.target.result})`;
+                            document.getElementById('image-container').appendChild(imageItem);
+                        }
+                        img.src = event.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                });
+            });
+
+            input.click();
+        });
+    </script>
+</body>
+</html>
