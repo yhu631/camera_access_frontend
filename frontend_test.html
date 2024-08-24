@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Layout</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-section {
+            height: 5%;
+            display: flex;
+        }
+        .top-section > div {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: lightblue;
+            font-size: 1em;
+        }
+        .bottom-section {
+            height: 95%;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-row {
+            flex: 3;
+            display: flex;
+            width: 100%;
+        }
+        .top-left {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            box-sizing: border-box;
+        }
+        .top-left .top-left-top {
+            display: flex;
+            flex: 1;
+        }
+        .top-left .top-left-top > div {
+            flex: 1;
+            background-color: rgb(233, 137, 137);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .top-left .top-left-top > div:nth-child(2) {
+            background-color: lightgray;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .top-left .top-left-top > div:nth-child(3) {
+            background-color: lightcoral;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .top-left .top-left-bottom {
+            flex: 4;
+            display: flex;
+            flex-direction: row;
+        }
+        .top-left .top-left-bottom > div {
+            flex: 1;
+            background-color: rgb(255, 255, 255);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .top-left .top-left-bottom > .bottom-left-top,
+        .top-left .top-left-bottom > .bottom-left-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .bottom-left-top canvas,
+        .bottom-left-bottom canvas {
+            border: 1px solid black;
+            display: block;
+        }
+        .top-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .bottom-row {
+            flex: 1;
+            display: flex;
+            width: 100%;
+        }
+        .bottom-left {
+            flex: 2;
+            background-color: lightyellow;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .bottom-left .section-title {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .bottom-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            background-color: rgb(225, 154, 248);
+        }
+        .bottom-right .section-title {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .right-section-top, .right-section-middle, .right-section-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            font-size: 1em;
+        }
+        .right-section-top {
+            height: 30%;
+            background-color: lightgreen;
+            flex-direction: column;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .keyword-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            padding: 0 10px;
+            margin-top: -10px;
+        }
+        .keyword-buttons button {
+            background-color: lightgray;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.7em;
+            transition: background-color 0.3s, transform 0.3s;
+            width: calc(50% - 13px);
+        }
+        .keyword-buttons button:hover,
+        .keyword-buttons button.active {
+            background-color: lightcoral;
+            transform: scale(1.1);
+        }
+        .right-section-middle {
+            height: 20%;
+            background-color: #FFDAB9;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .dropdown {
+            width: 100%;
+            padding: 6px;
+            font-size: 0.8em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: lightgray;
+            cursor: pointer;
+        }
+        .right-section-bottom {
+            height: 50%;
+            background-color: lightblue;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            justify-content: center;
+            align-content: space-between;
+        }
+        .right-section-bottom .image-button {
+            width: 80px;
+            height: 80px;
+            border: none;
+            border-radius: 5px;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+            flex: 1 1 45%;
+            box-sizing: border-box;
+        }
+        .right-section-bottom .image-button:hover {
+            transform: scale(1.1);
+        }
+        .voice-input-button {
+            background-color: rgb(243, 229, 84);
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            color: black;
+            font-size: 0.8em;
+            transition: background-color 0.3s;
+            margin-right: 10px; /* Add space between buttons */
+        }
+        .voice-input-button:hover {
+            background-color: gold;
+        }
+        .voice-input-result {
+            background-color: rgb(255, 255, 255);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 0.8em;
+            box-sizing: border-box;
+            overflow: auto;
+            width: 100%;
+            height: 100px; /* Set a fixed height for the editable area */
+            margin-bottom: 10px;
+            overflow-y: auto;
+            resize: vertical; /* Allow vertical resizing */
+            white-space: pre-wrap; /* Preserve white space and line breaks */
+        }
+        .upload-image-button {
+            background-color: lightseagreen;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            color: white;
+            font-size: 0.8em;
+            transition: background-color 0.3s;
+        }
+        .upload-image-button:hover {
+            background-color: darkgreen;
+        }
+        .upload-input {
+            display: none;
+        }
+        .submit-button {
+            background-color: lightblue;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            color: white;
+            font-size: 0.8em;
+            transition: background-color 0.3s;
+        }
+        .submit-button:hover {
+            background-color: deepskyblue;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-section">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+    </div>
+    <div class="bottom-section">
+        <div class="top-row">
+            <div class="top-left">
+                <div class="top-left-top">
+                    <div>
+                        <button class="voice-input-button" id="voice-input-button">Start Voice Input</button>
+                        <button class="submit-button" id="submit-button">Submit</button>
+                    </div>
+                    <div>
+                        <textarea class="voice-input-result" id="voice-input-result" placeholder="Enter text or use voice input here..."></textarea>
+                    </div>
+                    <div>
+                        <label for="upload-image" class="upload-image-button">Upload Image</label>
+                        <input type="file" id="upload-image" class="upload-input" accept="image/*">
+                    </div>
+                </div>
+                <div class="top-left-bottom">
+                    <div class="bottom-left-top">
+                        <canvas id="canvas1"></canvas>
+                    </div>
+                    <div class="bottom-left-bottom">
+                        <canvas id="canvas2"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="top-right">
+                <div class="right-section-top">
+                    <div class="section-title">Title</div>
+                    <div class="keyword-buttons">
+                        <button class="keyword-button" data-image="image1.jpg">Keyword 1</button>
+                        <button class="keyword-button" data-image="image2.jpg">Keyword 2</button>
+                        <button class="keyword-button" data-image="image3.jpg">Keyword 3</button>
+                        <button class="keyword-button" data-image="image4.jpg">Keyword 4</button>
+                        <button class="keyword-button" data-image="image5.jpg">Keyword 5</button>
+                        <button class="keyword-button" data-image="image6.jpg">Keyword 6</button>
+                    </div>
+                </div>
+                <div class="right-section-middle">
+                    <select class="dropdown">
+                        <option value="Option 1">Option 1</option>
+                        <option value="Option 2">Option 2</option>
+                        <option value="Option 3">Option 3</option>
+                    </select>
+                </div>
+                <div class="right-section-bottom">
+                    <button class="image-button" style="background-image: url('image1.jpg');"></button>
+                    <button class="image-button" style="background-image: url('image2.jpg');"></button>
+                    <button class="image-button" style="background-image: url('image3.jpg');"></button>
+                    <button class="image-button" style="background-image: url('image4.jpg');"></button>
+                    <button class="image-button" style="background-image: url('image5.jpg');"></button>
+                    <button class="image-button" style="background-image: url('image6.jpg');"></button>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-row">
+            <div class="bottom-left">
+                <div class="section-title">Bottom Left 75 x 20%</div>
+            </div>
+            <div class="bottom-right">
+                <div class="section-title">Bottom Right 25 x 20%</div>
+                <canvas id="canvas-right-bottom"></canvas>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Existing JavaScript for canvas drawing
+        const canvas1 = document.getElementById('canvas1');
+        const ctx1 = canvas1.getContext('2d');
+
+        canvas1.width = 300; // Set canvas width
+        canvas1.height = 300; // Set canvas height
+
+        const canvas2 = document.getElementById('canvas2');
+        const ctx2 = canvas2.getContext('2d');
+
+        canvas2.width = 300; // Set canvas width
+        canvas2.height = 300; // Set canvas height
+
+        const canvasRightBottom = document.getElementById('canvas-right-bottom');
+        const ctxRightBottom = canvasRightBottom.getContext('2d');
+
+        canvasRightBottom.width = 200; // Set canvas width
+        canvasRightBottom.height = 200; // Set canvas height
+
+        let drawing = false;
+
+        function getCanvasCoordinates(canvas, event) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            };
+        }
+
+        canvas1.addEventListener('mousedown', (e) => {
+            drawing = true;
+            const coords = getCanvasCoordinates(canvas1, e);
+            ctx1.beginPath();
+            ctx1.moveTo(coords.x, coords.y);
+        });
+
+        canvas1.addEventListener('mousemove', (e) => {
+            if (drawing) {
+                const coords = getCanvasCoordinates(canvas1, e);
+                ctx1.lineTo(coords.x, coords.y);
+                ctx1.stroke();
+            }
+        });
+
+        canvas1.addEventListener('mouseup', () => {
+            drawing = false;
+        });
+
+        canvas1.addEventListener('mouseout', () => {
+            drawing = false;
+        });
+
+        // Voice input functionality
+        const voiceInputButton = document.getElementById('voice-input-button');
+        const voiceInputResult = document.getElementById('voice-input-result');
+        let recognition = null;
+
+        function startVoiceInput() {
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onresult = event => {
+                const transcript = event.results[0][0].transcript;
+                voiceInputResult.value += transcript + ' '; // Append to current content
+            };
+
+            recognition.onerror = event => {
+                console.error('Speech recognition error:', event.error);
+            };
+
+            recognition.start();
+            voiceInputButton.textContent = 'Stop Voice Input';
+        }
+
+        function stopVoiceInput() {
+            if (recognition) {
+                recognition.stop();
+                recognition = null;
+                voiceInputButton.textContent = 'Start Voice Input';
+            }
+        }
+
+        voiceInputButton.addEventListener('click', () => {
+            if (voiceInputButton.textContent === 'Start Voice Input') {
+                startVoiceInput();
+            } else {
+                stopVoiceInput();
+            }
+        });
+
+        // Upload image functionality
+        const uploadImageInput = document.getElementById('upload-image');
+
+        uploadImageInput.addEventListener('change', event => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvasWidth = canvas2.width;
+                        const canvasHeight = canvas2.height;
+                        const imgAspectRatio = img.width / img.height;
+                        const canvasAspectRatio = canvasWidth / canvasHeight;
+
+                        let drawWidth, drawHeight;
+                        if (imgAspectRatio > canvasAspectRatio) {
+                            drawWidth = canvasWidth;
+                            drawHeight = canvasWidth / imgAspectRatio;
+                        } else {
+                            drawHeight = canvasHeight;
+                            drawWidth = canvasHeight * imgAspectRatio;
+                        }
+
+                        const x = (canvasWidth - drawWidth) / 2;
+                        const y = (canvasHeight - drawHeight) / 2;
+
+                        ctx2.clearRect(0, 0, canvasWidth, canvasHeight);
+                        ctx2.drawImage(img, x, y, drawWidth, drawHeight);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Button click functionality for changing canvas image
+        const keywordButtons = document.querySelectorAll('.keyword-button');
+
+        keywordButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const imageUrl = button.getAttribute('data-image');
+                const img = new Image();
+                img.onload = () => {
+                    ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+                    ctx2.drawImage(img, 0, 0, canvas2.width, canvas2.height);
+                };
+                img.src = imageUrl;
+            });
+        });
+
+        // Additional functionality for image buttons in the right section
+        const imageButtons = document.querySelectorAll('.right-section-bottom .image-button');
+        
+        imageButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const backgroundImage = button.style.backgroundImage.slice(5, -2); // Remove 'url(" and ")
+                const img = new Image();
+                img.onload = () => {
+                    ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+                    ctx2.drawImage(img, 0, 0, canvas2.width, canvas2.height);
+                };
+                img.src = backgroundImage;
+            });
+        });
+    </script>
+</body>
+</html>
